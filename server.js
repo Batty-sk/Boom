@@ -1,24 +1,24 @@
-var express = require('express');
-var http = require('http');
-var { Server: SocketIoServer } = require('socket.io');
-var next = require('next');
+
 const { v4: uuidv4 } = require('uuid');
+const Express=require('express')
+const app=Express()
+const server=require('http').createServer(app)
+const {Server}=require('socket.io')// binding the socket with the express server.
+const cors=require('cors')
+//middlewares
+app.use(cors())
 
-// Generate a random UUID
+const io=new Server(server,{
+  cors:{
+      origin:'http://localhost:3000', 
+      methods:['GET','POST']
+  }
+})
 
-
-var app = next({ dev: process.env.NODE_ENV !== 'production' });
-var handle = app.getRequestHandler();
-
-
-var server = express();
-var httpServer = http.createServer(server);
-var io = new SocketIoServer(httpServer);
 
 
 const Meetings=[]
 
-app.prepare().then(() => {
   // Socket.io logic
   io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
@@ -108,12 +108,8 @@ app.prepare().then(() => {
   });
 
   // Handle all other requests with Next.js
-  server.all('*', (req, res) => {
-    return handle(req, res);
-  });
-
+ 
   // Start the server
-  httpServer.listen(3000, () => {
-    console.log('Server listening on http://localhost:3000');
-  });
-});
+  server.listen(3001,()=>{
+    console.log('server has been started');
+})
