@@ -15,6 +15,7 @@ interface PeerVideoProps {
 const PeerVideo:React.FC<PeerVideoProps> = ({id,stream}) => {
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
 
     const url = stream ? (stream as any) : null; // Cast MediaStream to any and then to null if it's null
@@ -23,14 +24,24 @@ const PeerVideo:React.FC<PeerVideoProps> = ({id,stream}) => {
     
     useEffect(() => {
       if (videoRef.current && stream) {
-        videoRef.current.srcObject = stream;
+        const combinedStream = new MediaStream([...stream.getVideoTracks()]);
+
+        videoRef.current.srcObject = combinedStream
       }
     }, [videoMuted]);
+
+    useEffect(() => {
+      if (audioRef.current && stream) {
+        const combinedAudioStream = new MediaStream([...stream.getAudioTracks()]);
+        audioRef.current.srcObject = combinedAudioStream;
+      }
+    }, []);
 
    const handleAudio=()=>{
     const audioTracks = stream?.getAudioTracks();
 
     audioTracks?.forEach((track) => {
+
       track.enabled = !audio;
     });
     setAudio(!audio)
@@ -68,6 +79,8 @@ const PeerVideo:React.FC<PeerVideoProps> = ({id,stream}) => {
 </IconButton>
 
 </span></div>:''}
+<audio ref={audioRef} autoPlay playsInline style={{ display: 'none' }} />
+
       </>
     )
 }
