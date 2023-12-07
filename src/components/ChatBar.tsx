@@ -17,7 +17,7 @@ const ChatBar:React.FC<ChatBarProps> = ({ chats, handleSendMessage,onClose }) =>
 
   return (
 <div className='w-[100%] h-[100%] bg-slate-200 border  relative'>
-   <div className='font-mono  flex justify-around items-center text-center text-3xl p-5 text-black font-extrabold border bg-indigo-300 relative z-10'>  
+   <div className='font-mono  flex justify-around items-center text-center text-3xl p-5 text-black font-extrabold border relative z-10' style={{background:'aliceblue'}}>  
    <h3 className='text-center'>Chat</h3>
     {onClose?<div className='text-end relative z-50
      text-red-600' ><span className='p-2 cursor-pointer font-extrabold text-5xl' onClick={()=>{
