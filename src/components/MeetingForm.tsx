@@ -63,10 +63,8 @@ const MeetingForm:React.FC<Prop> = ({title,onClose} ) => {
     }
 
 
-    if (typeof window !== 'undefined') {
         socket.on('error', showErr);
         getMediaStream();
-      }
   
       return () => {
         if (typeof window !== 'undefined') {
