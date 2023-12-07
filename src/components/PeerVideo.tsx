@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import ReactPlayer from 'react-player'
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import MicOffIcon from '@mui/icons-material/MicOff';
@@ -6,6 +6,7 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 import IconButton from '@mui/material/IconButton'
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import { useRef } from 'react';
 
 interface PeerVideoProps {
     id:string,
@@ -13,11 +14,19 @@ interface PeerVideoProps {
   }
 const PeerVideo:React.FC<PeerVideoProps> = ({id,stream}) => {
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+
     const url = stream ? (stream as any) : null; // Cast MediaStream to any and then to null if it's null
     const[audio,setAudio]=useState(true)
     const[videoMuted,setVideoMuted]=useState(false)
     
-    
+    useEffect(() => {
+      if (videoRef.current && stream) {
+        videoRef.current.srcObject = stream;
+      }
+    }, [videoMuted]);
+
    const handleAudio=()=>{
     const audioTracks = stream?.getAudioTracks();
 
@@ -34,6 +43,7 @@ const PeerVideo:React.FC<PeerVideoProps> = ({id,stream}) => {
 
     videoTrack.enabled = !videoTrack.enabled;
 
+    
     // Update the state to reflect the current  state
     setVideoMuted(!videoMuted);
 }
@@ -41,15 +51,7 @@ const PeerVideo:React.FC<PeerVideoProps> = ({id,stream}) => {
       <>
         {stream!=null && !videoMuted? (
             <div className='w-[100%] h-[100%]'>
-          <ReactPlayer
-            playing={true}
-            
-            url={url}
-           // Mute the video by default to avoid feedback loop
-           style={{height:'400px !important',width:'100% !important',maxHeight:'100%',maxWidth:'100%'}}
-
-          />
-
+               <video ref={videoRef}  autoPlay playsInline  style={{ width: '100%', height: '100%' }} />
           </div>
           
         ):<AccountBoxIcon  className=' text-gray-400 h-[400px] w-[100%]' />} 
