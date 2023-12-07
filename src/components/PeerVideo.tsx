@@ -39,9 +39,9 @@ const PeerVideo:React.FC<PeerVideoProps> = ({id,stream}) => {
   
   const handleVideoMute=()=>{
 
-    const videoTrack = stream.getVideoTracks()[0];
-
-    videoTrack.enabled = !videoTrack.enabled;
+    const videoTrack = stream?.getVideoTracks()[0];
+    if(videoTrack)
+      videoTrack.enabled = !videoTrack.enabled;
 
     
     // Update the state to reflect the current  state
